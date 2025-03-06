@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Platforms>AnyCPU;x86</Platforms>
+    <ApplicationIcon>aiclogo.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <SignAssembly>False</SignAssembly>
+    <Copyright>© 2025 Tatanakots</Copyright>
+	  <!-- 基础版本号，用于 InformationalVersion 前缀 -->
+	  <VersionPrefix>1.1.0</VersionPrefix>
+	  <!-- AssemblyVersion 和 FileVersion 必须符合数字格式 -->
+	  <AssemblyVersion>1.1</AssemblyVersion>
+	  <BuildDate>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</BuildDate>
+	  <FileVersion>$(VersionPrefix).$(BuildDate)</FileVersion>
+	  <Authors>Tatanako</Authors>
+	  <Company>$(Authors)</Company>
+	  <NeutralLanguage>zh-Hans</NeutralLanguage>
+	  <Version>$(VersionPrefix)</Version>
+	  <!-- <FileVersion>1.0.0.0</FileVersion> -->
+  </PropertyGroup>
+
+	<Target Name="SetBuildVersion" BeforeTargets="GenerateAssemblyInfo">
+		<PropertyGroup>
+			<!-- 使用当前时间生成构建日期字符串，格式为 yyyyMMddHHmm，
+         如需要使用 UTC 时间可以将 Now 替换为 UtcNow -->
+			<BuildDate>$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</BuildDate>
+			<!-- 拼接最终版本号：例如 1.0.202503061530 -->
+			<FileVersion>$(VersionPrefix).$(BuildDate)</FileVersion>
+		</PropertyGroup>
+	</Target>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="aiclogo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="9.0.2" />
+    <PackageReference Include="System.Management" Version="9.0.2" />
+  </ItemGroup>
+
+</Project>
