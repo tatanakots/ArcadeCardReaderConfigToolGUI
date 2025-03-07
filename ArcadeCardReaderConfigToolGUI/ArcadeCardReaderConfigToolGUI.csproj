@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -11,19 +11,20 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <SignAssembly>False</SignAssembly>
     <Copyright>© $([System.DateTime]::Now.ToString("yyyy")) Tatanakots</Copyright>
-	  <!-- 基础版本号，用于 InformationalVersion 前缀 -->
-	  <VersionPrefix>1.1.0</VersionPrefix>
-	  <!-- AssemblyVersion 和 FileVersion 必须符合数字格式 -->
-	  <AssemblyVersion>1.1</AssemblyVersion>
-	  <BuildDate>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</BuildDate>
-	  <FileVersion>$(VersionPrefix).$(BuildDate)</FileVersion>
-	  <Authors>Tatanako</Authors>
-	  <Company>$(Authors)</Company>
-	  <NeutralLanguage>zh-Hans</NeutralLanguage>
-	  <Version>$(VersionPrefix)</Version>
-	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
-	  <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-	  <!-- <FileVersion>1.0.0.0</FileVersion> -->
+	<!-- 基础版本号，用于 InformationalVersion 前缀 -->
+	<VersionPrefix>1.1.0</VersionPrefix>
+	<!-- AssemblyVersion 和 FileVersion 必须符合数字格式 -->
+	<AssemblyVersion>1.1</AssemblyVersion>
+	<BuildDate>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</BuildDate>
+	<FileVersion>$(VersionPrefix).$(BuildDate)</FileVersion>
+	<Authors>Tatanako</Authors>
+	<Company>$(Authors)</Company>
+	<NeutralLanguage>zh-Hans</NeutralLanguage>
+	<Version>$(VersionPrefix)</Version>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+	<!-- <FileVersion>1.0.0.0</FileVersion> -->
+	<NoWarn>$(NoWarn);CS7035</NoWarn>
   </PropertyGroup>
 
 	<Target Name="SetBuildVersion" BeforeTargets="GenerateAssemblyInfo">

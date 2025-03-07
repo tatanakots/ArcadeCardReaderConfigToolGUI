@@ -48,7 +48,7 @@
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             ReCardNumberIDmTextBox = new System.Windows.Forms.TextBox();
             ReCardNumberTextBox = new System.Windows.Forms.TextBox();
-            CancelButton = new System.Windows.Forms.Button();
+            WindowCancelButton = new System.Windows.Forms.Button();
             SubmitButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)LEDBrightnessTrackBar).BeginInit();
             SuspendLayout();
@@ -218,15 +218,15 @@
             ReCardNumberTextBox.TabIndex = 19;
             toolTip1.SetToolTip(ReCardNumberTextBox, "10进制格式，20位，无前缀，中间不需要空格");
             // 
-            // CancelButton
+            // WindowCancelButton
             // 
-            CancelButton.Location = new System.Drawing.Point(676, 388);
-            CancelButton.Name = "CancelButton";
-            CancelButton.Size = new System.Drawing.Size(112, 50);
-            CancelButton.TabIndex = 20;
-            CancelButton.Text = "取消";
-            CancelButton.UseVisualStyleBackColor = true;
-            CancelButton.Click += CancelButton_Click;
+            WindowCancelButton.Location = new System.Drawing.Point(676, 388);
+            WindowCancelButton.Name = "WindowCancelButton";
+            WindowCancelButton.Size = new System.Drawing.Size(112, 50);
+            WindowCancelButton.TabIndex = 20;
+            WindowCancelButton.Text = "取消";
+            WindowCancelButton.UseVisualStyleBackColor = true;
+            WindowCancelButton.Click += CancelButton_Click;
             // 
             // SubmitButton
             // 
@@ -244,7 +244,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(800, 450);
             Controls.Add(SubmitButton);
-            Controls.Add(CancelButton);
+            Controls.Add(WindowCancelButton);
             Controls.Add(ReCardNumberTextBox);
             Controls.Add(ReCardNumberIDmTextBox);
             Controls.Add(label8);
@@ -292,7 +292,7 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.TextBox ReCardNumberIDmTextBox;
         private System.Windows.Forms.TextBox ReCardNumberTextBox;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button WindowCancelButton;
         private System.Windows.Forms.Button SubmitButton;
     }
 }

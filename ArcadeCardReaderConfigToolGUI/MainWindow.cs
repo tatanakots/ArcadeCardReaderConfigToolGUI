@@ -24,7 +24,7 @@ namespace ArcadeCardReaderConfigToolGUI
         private bool isConnected = false;
         private bool isHighBaudRate, isLEDEnabled;
         private int LEDBrightness = 0, firmwareVision = 0;
-        private CancellationTokenSource testCancellationToken;
+        private CancellationTokenSource? testCancellationToken;
 
         // 命令定义
         private const byte CMD_READ_EEPROM = 0xF6;
@@ -78,26 +78,10 @@ namespace ArcadeCardReaderConfigToolGUI
             }
         }
 
-        [StructLayout(LayoutKind.Explicit, Size = 128)]
-        public struct PacketResponse
-        {
-            [FieldOffset(0)] public byte FrameLength;
-            [FieldOffset(1)] public byte Addr;
-            [FieldOffset(2)] public byte SeqNo;
-            [FieldOffset(3)] public byte Cmd;
-            [FieldOffset(4)] public byte Status;
-            [FieldOffset(5)] public byte PayloadLen;
-
-            // 这里模拟 `union`
-            [FieldOffset(6)] public byte Mode;
-            [FieldOffset(6)] public byte[] Version;
-            [FieldOffset(6)] public byte[] Block;
-            [FieldOffset(6)] public byte[] EepromData;
-        }
-
         public MainWindow()
         {
             InitializeComponent();
+            serialPort = new SerialPort();
         }
 
         // 使用 WMI 获取真实的串口设备
@@ -110,7 +94,7 @@ namespace ArcadeCardReaderConfigToolGUI
                 {
                     foreach (var port in searcher.Get())
                     {
-                        portList.Add(port["DeviceID"].ToString());
+                        portList.Add(port["DeviceID"].ToString() ?? "空端口号");
                     }
                 }
             }
@@ -203,7 +187,7 @@ namespace ArcadeCardReaderConfigToolGUI
                 return;
             }
 
-            string selectedPort = devicesComboBox.SelectedItem.ToString();
+            string selectedPort = devicesComboBox.SelectedItem.ToString()!;
             if (!IsPortValid(selectedPort))
             {
                 MessageBox.Show("选择的串口无效，请重新选择！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -264,7 +248,7 @@ namespace ArcadeCardReaderConfigToolGUI
                 Thread.Sleep(100);
 
                 // 读取返回数据
-                byte[] response = ReceiveData(12);
+                byte[]? response = ReceiveData(12);
 
                 //string hexResponse = BitConverter.ToString(response).Replace("-", " ");
 
@@ -297,7 +281,7 @@ namespace ArcadeCardReaderConfigToolGUI
                     else
                     {
                         MessageBox.Show("读卡器连接错误，请检查设备！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        disconnectDeviceButton_Click(null, null);
+                        disconnectDeviceButton_Click(this, EventArgs.Empty);
                     }
                 }
             }
@@ -366,7 +350,7 @@ namespace ArcadeCardReaderConfigToolGUI
         }
 
         // 🔹 读取串口数据
-        private byte[] ReceiveData(int length)
+        private byte[]? ReceiveData(int length)
         {
             try
             {
@@ -433,6 +417,12 @@ namespace ArcadeCardReaderConfigToolGUI
                     if (MessageBox.Show("固件版本v4以下不支持读卡测试模式，请按“取消”退出，如果确定将继续进入，可能会发生无法预计的结果。", "错误", MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.Cancel)
                     {
                         CardReadTestButton.Enabled = true;
+
+                        SegaModeSettingButton.Enabled = true;
+                        EnteryNamcoModeButton.Enabled = true;
+                        EnterySpiceModeButton.Enabled = true;
+                        EnteryPN532ModeButton.Enabled = true;
+
                         return;
                     }
                 }
@@ -440,6 +430,12 @@ namespace ArcadeCardReaderConfigToolGUI
                 if (MessageBox.Show("即将进入读卡测试模式，读卡测试模式必须通过拔掉USB线缆（断电后重新上电）才能退出，如果不退出会导致无法正常使用读卡器！\n现在点击取消还来得及~", "警告 - 即将进入读卡测试模式", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
                 {
                     CardReadTestButton.Enabled = true;
+
+                    SegaModeSettingButton.Enabled = true;
+                    EnteryNamcoModeButton.Enabled = true;
+                    EnterySpiceModeButton.Enabled = true;
+                    EnteryPN532ModeButton.Enabled = true;
+
                     return;
                 }
 
@@ -541,14 +537,14 @@ namespace ArcadeCardReaderConfigToolGUI
             // 通过程序集位置获取文件版本信息
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             Console.WriteLine("FileVersion: " + fvi.FileVersion);
-            MessageBox.Show($"街机游戏读卡器配置程序（图形界面版）\n\n程序版本：Ver. {fvi.FileVersion}\n完全兼容的最高固件版本：10\n\n软件作者：Tatanako\n硬件作者：Qinh\n特别鸣谢：Soda（送我了读卡器硬件）\n\n本软件基于\nhttps://github.com/QHPaeek/Arduino-Aime-Reader/blob/develop/tools/BaudRateTool/baudrate_tool.c\n编写完成，感谢Qinh开源~\n\n本软件完全免费，禁止用于商业用途！", "关于本软件", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"街机游戏读卡器配置程序（图形界面版）\n\n程序版本：Ver. {fvi.FileVersion}\n完全兼容的最高固件版本：10\n\n软件作者：Tatanako\n硬件作者：Qinh\n特别鸣谢：Soda（送我了读卡器硬件）\n\n本软件基于\nhttps://github.com/QHPaeek/Arduino-Aime-Reader/blob/develop/tools/BaudRateTool/baudrate_tool.c\n编写完成，感谢Qinh开源~\n\n本软件完全免费，代码开源于GitHub：\nhttps://github.com/tatanakots/ArcadeCardReaderConfigToolGUI", "关于本软件", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private unsafe void PacketWrite(PacketRequest req)
         {
             byte checksum = 0, len = 0;
             List<byte> sendBuffer = new List<byte>(); // 使用 List<byte> 方便动态添加数据
-            byte send_len;
+            //byte send_len;
             if (req.cmd == 0)
             {
                 return;
@@ -663,21 +659,21 @@ namespace ArcadeCardReaderConfigToolGUI
         {
             EnteryNamcoModeButton.Enabled = false;
             ChangeMode(NAMCO_MODE); // Namco 模式
-            disconnectDeviceButton_Click(null, null);
+            disconnectDeviceButton_Click(this, EventArgs.Empty);
         }
 
         private void EnterySpiceModeButton_Click(object sender, EventArgs e)
         {
             EnterySpiceModeButton.Enabled = false;
             ChangeMode(SPICE_MODE); // Spice 模式
-            disconnectDeviceButton_Click(null, null);
+            disconnectDeviceButton_Click(this, EventArgs.Empty);
         }
 
         private void EnteryPN532ModeButton_Click(object sender, EventArgs e)
         {
             EnteryPN532ModeButton.Enabled = false;
             ChangeMode(RAW_MODE);
-            disconnectDeviceButton_Click(null, null);
+            disconnectDeviceButton_Click(this, EventArgs.Empty);
         }
 
         private void SegaModeSettingButton_Click(object sender, EventArgs e)
@@ -688,8 +684,8 @@ namespace ArcadeCardReaderConfigToolGUI
             segaModeSettingWindow.ShowDialog();
             this.Enabled = true;
             SegaModeSettingButton.Enabled = true;
-            disconnectDeviceButton_Click(null, null);
-            connectDeviceButton_Click(null, null);
+            disconnectDeviceButton_Click(this, EventArgs.Empty);
+            connectDeviceButton_Click(this, EventArgs.Empty);
         }
     }
 }

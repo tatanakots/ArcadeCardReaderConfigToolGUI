@@ -125,7 +125,7 @@ namespace ArcadeCardReaderConfigToolGUI
         {
             byte checksum = 0, len = 0;
             List<byte> sendBuffer = new List<byte>(); // 使用 List<byte> 方便动态添加数据
-            byte send_len;
+            //byte send_len;
             if (req.cmd == 0)
             {
                 return;
@@ -392,6 +392,14 @@ namespace ArcadeCardReaderConfigToolGUI
             {
                 serialPort.Write(uart_send_buffer, 0, uart_send_buffer.Length);
                 Thread.Sleep(100);
+                if (change_highbaudrate_mode == 1)
+                {
+                    ChangeBaudRate(115200);
+                }
+                else
+                {
+                    ChangeBaudRate(38400);
+                }
                 MessageBox.Show("配置修改完成", "信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }
