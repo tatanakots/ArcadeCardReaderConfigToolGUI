@@ -11,11 +11,11 @@ jobs:
     steps:
       # 1. Checkout 代码
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # 2. 安装指定版本的 .NET（此处使用 8.0.x）
       - name: Set up .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
@@ -33,7 +33,7 @@ jobs:
 
       # 5. 上传构建产物
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ArcadeCardReaderConfigToolGUI
           path: ArcadeCardReaderConfigToolGUI.zip
