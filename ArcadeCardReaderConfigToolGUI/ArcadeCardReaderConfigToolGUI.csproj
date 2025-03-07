@@ -10,7 +10,7 @@
     <ApplicationIcon>aiclogo.ico</ApplicationIcon>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <SignAssembly>False</SignAssembly>
-    <Copyright>© 2025 Tatanakots</Copyright>
+    <Copyright>© $([System.DateTime]::Now.ToString("yyyy")) Tatanakots</Copyright>
 	  <!-- 基础版本号，用于 InformationalVersion 前缀 -->
 	  <VersionPrefix>1.1.0</VersionPrefix>
 	  <!-- AssemblyVersion 和 FileVersion 必须符合数字格式 -->
@@ -21,6 +21,8 @@
 	  <Company>$(Authors)</Company>
 	  <NeutralLanguage>zh-Hans</NeutralLanguage>
 	  <Version>$(VersionPrefix)</Version>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+	  <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 	  <!-- <FileVersion>1.0.0.0</FileVersion> -->
   </PropertyGroup>
 
@@ -52,6 +54,13 @@
 
   <ItemGroup>
     <Content Include="aiclogo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
