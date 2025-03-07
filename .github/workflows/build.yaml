@@ -1,0 +1,39 @@
+name: Build ArcadeCardReaderConfigToolGUI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+
+    steps:
+      # 1. Checkout 代码
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      # 2. 安装指定版本的 .NET（此处使用 8.0.x）
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. 构建 .NET 项目（Release 模式）
+      - name: Build .NET Project
+        run: dotnet build ArcadeCardReaderConfigToolGUI.sln --configuration Release
+
+      # 4. 压缩产物到 zip（使用 PowerShell 内置命令 Compress-Archive）
+      - name: Compress build output
+        # 注意下面路径中的 `\` 适用于 Windows Runner；如果在非 Windows Runner，路径写法可能需要 `/`
+        run: |
+          Compress-Archive -Path "ArcadeCardReaderConfigToolGUI\bin\Release\net8.0-windows7.0\*" `
+                           -DestinationPath "ArcadeCardReaderConfigToolGUI.zip"
+        shell: pwsh
+
+      # 5. 上传构建产物
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ArcadeCardReaderConfigToolGUI
+          path: ArcadeCardReaderConfigToolGUI.zip
